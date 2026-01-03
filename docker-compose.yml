@@ -1,0 +1,29 @@
+services:
+  wordpress:
+    build: .
+    volumes:
+      - wordpress_data:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      # Estas variables las tomará de lo que configures en Coolify
+      WORDPRESS_DB_USER: ${DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-password}
+      WORDPRESS_DB_NAME: ${DB_NAME:-wordpress}
+    depends_on:
+      - mariadb
+    restart: always
+
+  mariadb:
+    image: 'mariadb:11'
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-wordpress}
+      MYSQL_USER: ${DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+    restart: always
+
+volumes:
+  wordpress_data:
+  db_data:
